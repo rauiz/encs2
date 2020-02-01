@@ -20,7 +20,19 @@ public class CommandWindow : MonoBehaviour
         m_sendButton.onClick.RemoveAllListeners();
         m_sendButton.onClick.AddListener(SendCommand);
     }
-    
+
+    private void Update()
+    {
+        m_commandField.Select();
+        m_commandField.ActivateInputField();
+
+        if(Input.GetKeyDown(KeyCode.Return))
+        {
+            if(!string.IsNullOrEmpty(m_commandField.text))
+                SendCommand();
+        }
+    }
+
     public void SendCommand()
     {
         string commandText = m_commandField.text;

@@ -11,7 +11,7 @@ public class TileVisorUI : MonoBehaviour
         GameObject fxGO = Instantiate(pFXPrefab, transform);
         RectTransform fxRectTransform = fxGO.GetComponent<RectTransform>();
 
-        fxRectTransform.localPosition = Vector3.zero;
+        fxRectTransform.localPosition = Vector3.zero + new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0f);
         fxRectTransform.localRotation = Quaternion.identity;
         fxRectTransform.localScale = Vector3.one;
 

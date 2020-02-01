@@ -39,10 +39,23 @@ public class BV_Server : MonoBehaviour
         S_MovePlayer s_MovePlayer = m_ServerWorld.CreateSystem<S_MovePlayer>();
         s_MovePlayer.CleanupMessageBarrier = b_EndOfFrame;
 
+        S_DamageWall s_DamageWall = m_ServerWorld.CreateSystem<S_DamageWall>();
+        s_DamageWall.CleanupMessageBarrier = b_EndOfFrame;
+
+        S_RepairWall s_RepairWall = m_ServerWorld.CreateSystem<S_RepairWall>();
+        s_RepairWall.CleanupMessageBarrier = b_EndOfFrame;
+
+        S_ShootPlayer s_ShootPlayer = m_ServerWorld.CreateSystem<S_ShootPlayer>();
+        s_ShootPlayer.CleanupMessageBarrier = b_EndOfFrame;
+
         ug_ServerNetwork = m_ServerWorld.CreateSystem<UG_Network>();
         ug_ServerNetwork.AddSystemToUpdateList(s_ManageServerConnections);
         ug_ServerNetwork.AddSystemToUpdateList(s_GenerateGrid);
-        ug_ServerNetwork.AddSystemToUpdateList(s_MovePlayer);        
+        ug_ServerNetwork.AddSystemToUpdateList(s_MovePlayer);
+        ug_ServerNetwork.AddSystemToUpdateList(s_DamageWall);
+        ug_ServerNetwork.AddSystemToUpdateList(s_RepairWall);
+        ug_ServerNetwork.AddSystemToUpdateList(s_ShootPlayer);
+        
 
         ug_ServerNetwork.SortSystemUpdateList();
     }

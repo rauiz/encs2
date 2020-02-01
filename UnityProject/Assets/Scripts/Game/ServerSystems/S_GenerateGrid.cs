@@ -57,7 +57,7 @@ public class S_GenerateGrid : JobComponentSystem
                 {
                     for (int k = 0; k < C_GridPos.Wall_Count; k++)
                     {
-                        c_Pos.WallStates[k] = (byte)WallStates.Open;
+                        c_Pos.WallStates[k] = (byte)WallStates.Damaged;
                     }
                 }
 

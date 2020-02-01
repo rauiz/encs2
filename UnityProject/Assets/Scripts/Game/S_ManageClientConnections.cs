@@ -116,7 +116,7 @@ public class S_ManageClientConnections : JobComponentSystem
                     using (var writer = new DataStreamWriter(8, Allocator.Temp))
                     {
                         writer.Write((int)MessageFromClientTypes.AttemptMovePlayer);
-                        writer.Write((int)WallIndexes.Down);
+                        writer.Write((int)WallIndexes.Up);
                         RW_Connections[0].Connection.Send(RW_Driver, writer);
                     }
 
@@ -154,6 +154,12 @@ public class S_ManageClientConnections : JobComponentSystem
                             // writer.WriteBytes(ptr_StringBytes, t_TextNotification.PlayerText.LengthInBytes);
                             int i_TextHandle = t_Stream.ReadInt(ref t_ReaderCtx);
                             Debug.Log($"Writing TextHandle {i_TextHandle}");
+                            using (var writer = new DataStreamWriter(8, Allocator.Temp))
+                            {
+                                writer.Write((int)MessageFromClientTypes.RepairWall);
+                                writer.Write((int)WallIndexes.Up);
+                                RW_Connections[0].Connection.Send(RW_Driver, writer);
+                            }
                             break;
 
                         case MessageFromServerTypes.NotifyPlayerSound:

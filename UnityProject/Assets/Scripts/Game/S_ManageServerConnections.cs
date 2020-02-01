@@ -159,10 +159,10 @@ public class S_ManageServerConnections : JobComponentSystem
                     switch (e_MsgType)
                     {
                         case MessageFromClientTypes.ConnectionEstablished:
-                            Debug.Log($"Connection Established on Client {p_ServerConnection.ConnectionId}.");                            
+                            Debug.Log($"Connection is still established on Client {p_ServerConnection.ConnectionId}.");
                             break;
 
-                        case MessageFromClientTypes.AttemptMovePlayer:
+                        case MessageFromClientTypes.MovePlayer:
                             HandleAttemptMoveMessage(in p_Index, in p_ServerConnection, ref stream, ref t_ReaderCtx);
                             break;
 

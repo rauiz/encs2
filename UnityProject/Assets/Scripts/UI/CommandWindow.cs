@@ -26,6 +26,9 @@ public class CommandWindow : MonoBehaviour
         string commandText = m_commandField.text;
         string result = onMessageSentCallback?.Invoke(commandText);
 
+        if (string.IsNullOrEmpty(result))
+            RegisterLog("LALALA");
+
         m_commandField.text = string.Empty;
     }
 
@@ -33,5 +36,7 @@ public class CommandWindow : MonoBehaviour
     {
         m_logText.text += pMessage;
         m_logText.text += "\n";
+
+        //Slowly show the texts...
     }
 }

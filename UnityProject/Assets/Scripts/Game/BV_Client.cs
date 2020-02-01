@@ -57,7 +57,7 @@ public class BV_Client : MonoBehaviour
         m_ClientWorld.EntityManager.SetComponentData(t_ConnectionRequest, new C_ConnectionRequest
         {
             EndPoint = m_ServerEndpoint
-        });
+        });        
     }
 
     // Update is called once per frame

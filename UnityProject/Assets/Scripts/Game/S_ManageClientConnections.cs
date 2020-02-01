@@ -26,7 +26,11 @@ public class S_ManageClientConnections : JobComponentSystem
             All = new ComponentType[] { ComponentType.ReadWrite<C_NetworkConnection>(), ComponentType.ReadOnly<TC_ClientConnectionHandler>() }
         });
 
-        m_ClientNetworkConnectionArchetype = EntityManager.CreateArchetype(ComponentType.ReadOnly<C_NetworkConnection>(), ComponentType.ReadOnly<TC_ClientConnectionHandler>());
+        m_ClientNetworkConnectionArchetype = EntityManager.CreateArchetype(
+            typeof(C_NetworkConnection),
+            typeof(TC_ClientConnectionHandler),
+            typeof(NMBF_RequestServer)
+            );
     }
 
 
@@ -86,7 +90,10 @@ public class S_ManageClientConnections : JobComponentSystem
 
     [RequireComponentTag(typeof(TC_ClientConnectionHandler))]
     private struct J_ClientUpdate : IJob
-    {        
+    {
+        [DeallocateOnJobCompletion] [ReadOnly] public NativeArray<Entity> R_ConnectionEntities;
+
+        [DeallocateOnJobCompletion] public BufferFromEntity<NMBF_RequestServer> RW_NetworkMessages;        
         [DeallocateOnJobCompletion] public NativeArray<C_NetworkConnection> RW_Connections;
         public UdpNetworkDriver RW_Driver;
 
@@ -115,7 +122,7 @@ public class S_ManageClientConnections : JobComponentSystem
 
                     using (var writer = new DataStreamWriter(8, Allocator.Temp))
                     {
-                        writer.Write((int)MessageFromClientTypes.AttemptMovePlayer);
+                        writer.Write((int)MessageFromClientTypes.MovePlayer);
                         writer.Write((int)WallIndexes.Up);
                         RW_Connections[0].Connection.Send(RW_Driver, writer);
                     }
@@ -181,6 +188,37 @@ public class S_ManageClientConnections : JobComponentSystem
                     };
                 }
             }
+
+            DynamicBuffer<NMBF_RequestServer> db_Requests = RW_NetworkMessages[R_ConnectionEntities[0]];
+            NMBF_RequestServer nmbf_CurrentRequest;
+            for (int i = 0; i < db_Requests.Length; i++)
+            {
+                nmbf_CurrentRequest = db_Requests[i];
+
+                using (var writer = new DataStreamWriter(8, Allocator.Temp))
+                {
+                    writer.Write((int)nmbf_CurrentRequest.Type);
+                    switch (nmbf_CurrentRequest.Type)
+                    {
+                        case MessageFromClientTypes.ConnectionEstablished:                                                        
+                            break;
+                        case MessageFromClientTypes.MovePlayer:
+                        case MessageFromClientTypes.BreakWall:
+                        case MessageFromClientTypes.RepairWall:
+                        case MessageFromClientTypes.AttemptShot:
+                            writer.Write((int)nmbf_CurrentRequest.Index);                            
+                            break;
+                        default:
+                            break;
+                    }
+                    
+                    RW_Connections[0].Connection.Send(RW_Driver, writer);
+                }
+                
+
+
+            }        
+        
         }
     }
 }

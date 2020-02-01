@@ -50,20 +50,21 @@ public struct NMBF_NotifyPlayerVisor : IBufferElementData
 
 public enum MessageFromClientTypes : int { 
     ConnectionEstablished = 1, 
-    AttemptMovePlayer = 2,  
+    MovePlayer = 2,  
     BreakWall = 3, 
     RepairWall = 4,
 
     AttemptShot = 5
 }
 
+[InternalBufferCapacity(Buffer_Size)]
+public struct NMBF_RequestServer : IBufferElementData
+{
+    public const int Buffer_Size = 10;
 
-
-
-
-
-
-
+    public MessageFromClientTypes Type;    
+    public WallIndexes Index;
+}
 
 public struct C_ConnectionRequest : IComponentData
 {

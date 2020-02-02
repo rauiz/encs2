@@ -16,7 +16,7 @@ public class BV_Server : MonoBehaviour
     public void Initialize(ushort p_Port)
     {
         // Server Initialization        
-        m_ServerDriver = new UdpNetworkDriver(new INetworkParameter[0]);
+        m_ServerDriver = new UdpNetworkDriver(new NetworkConfigParameter { connectTimeoutMS = 35000, disconnectTimeoutMS = 35000, maxConnectAttempts = 10, maxFrameTimeMS = 10 });
 
         NetworkEndPoint t_ServerEndpoint = NetworkEndPoint.AnyIpv4;
         t_ServerEndpoint.Port = p_Port;

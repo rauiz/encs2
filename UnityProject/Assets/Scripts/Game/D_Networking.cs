@@ -15,8 +15,7 @@ public class B_EndOfFrame : EntityCommandBufferSystem { }
 public enum MessageFromServerTypes : int 
 {
     NotifyPlayerText = 1,
-    NotifyPlayerSound = 2,
-    NotifyPlayerVisor = 3
+    NotifyPlayerVisor = 2
 }
 
 [InternalBufferCapacity(Buffer_Size)]
@@ -29,32 +28,25 @@ public struct NMBF_NotifyPlayerText : IBufferElementData
 }
 
 [InternalBufferCapacity(Buffer_Size)]
-public struct NMBF_NotifyPlayerSound : IBufferElementData
-{
-    public const int Buffer_Size = 10;
-
-    public int SoundHandle;
-}
-
-[InternalBufferCapacity(Buffer_Size)]
 public struct NMBF_NotifyPlayerVisor : IBufferElementData
 {
     public const int Buffer_Size = 10;
 
-    public WallIndexes Index;
     public int Intensity;
+    public int TileHandle;
+    public int FeedbackHandle;
 }
 
 
 /////////// CLIENT TO SERVER MESSAGE REQUESTS
 
 public enum MessageFromClientTypes : int { 
-    ConnectionEstablished = 1, 
+    PingConnection = 1, 
     MovePlayer = 2,  
     BreakWall = 3, 
     RepairWall = 4,
 
-    AttemptShot = 5
+    ShootPlayer = 5
 }
 
 [InternalBufferCapacity(Buffer_Size)]

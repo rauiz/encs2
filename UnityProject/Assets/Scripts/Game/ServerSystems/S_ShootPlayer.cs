@@ -47,6 +47,7 @@ public class S_ShootPlayer : JobComponentSystem
         NativeArray<Entity> na_BreakWallMessageEntities = m_ShootPlayerMessages.ToEntityArray(Allocator.TempJob);
         NativeArray<MC_ShootInDirection> na_ShootPlayerMessages = m_ShootPlayerMessages.ToComponentDataArray<MC_ShootInDirection>(Allocator.TempJob);
 
+        NativeArray<Entity> na_PlayerEntities = m_Players.ToEntityArray(Allocator.TempJob);
         NativeArray<C_PlayerIndex> na_PlayerIndexes = m_Players.ToComponentDataArray<C_PlayerIndex>(Allocator.TempJob);
         NativeArray<C_PlayerPos> na_PlayerPositions = m_Players.ToComponentDataArray<C_PlayerPos>(Allocator.TempJob);
 
@@ -74,6 +75,7 @@ public class S_ShootPlayer : JobComponentSystem
 
             if(c_CurrentPlayerPos.Pos == c_EnemyPlayerPos.Pos)
             {
+                U_ServerUtils.NotifyPlayerText(ref ecb_Cleanup, in na_PlayerEntities, in na_PlayerIndexes, mc_CurrentMessage.PlayerId, 28);
                 Debug.Log("Shot Enemy");
                 return inputDependencies;
             }
@@ -100,19 +102,24 @@ public class S_ShootPlayer : JobComponentSystem
             t_RequiredEnemyPos.y = Mathf.Clamp(t_RequiredEnemyPos.x, 0, singletong_GridDef.ColumnCount);
 
             int i_CheckingWallDirection = 0;
+            int i_HitTextMessage = 0;
             switch (mc_CurrentMessage.WallDirection)
             {
                 case WallIndexes.Up:
                     i_CheckingWallDirection = (int)WallIndexes.Down;
+                    i_HitTextMessage = 29;
                     break;
                 case WallIndexes.Down:
                     i_CheckingWallDirection = (int)WallIndexes.Up;
+                    i_HitTextMessage = 32;
                     break;
                 case WallIndexes.Left:
                     i_CheckingWallDirection = (int)WallIndexes.Right;
+                    i_HitTextMessage = 30;
                     break;
                 case WallIndexes.Right:
                     i_CheckingWallDirection = (int)WallIndexes.Left;
+                    i_HitTextMessage = 31;
                     break;
                 default:
                     break;
@@ -127,12 +134,14 @@ public class S_ShootPlayer : JobComponentSystem
                     if (c_CurrentGridPos.Pos != t_RequiredEnemyPos) continue;
                     
                     if(c_CurrentGridPos.WallStates[i_CheckingWallDirection] != (byte)WallStates.Open)
-                        Debug.Log($"Cannot Shoot through this wall: {c_CurrentGridPos}");
+                    {
+                        U_ServerUtils.NotifyPlayerText(ref ecb_Cleanup, in na_PlayerEntities, in na_PlayerIndexes, mc_CurrentMessage.PlayerId, 26);
+                    }                        
                     else
                     {
                         if(c_CurrentGridPos.Pos == t_RequiredEnemyPos)
                         {
-                            Debug.Log("Shot Enemy");
+                            U_ServerUtils.NotifyPlayerText(ref ecb_Cleanup, in na_PlayerEntities, in na_PlayerIndexes, mc_CurrentMessage.PlayerId, i_HitTextMessage);                            
                         }                            
                     }                        
                 }
